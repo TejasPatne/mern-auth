@@ -2,7 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux"
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage"
 import { app } from "../firebase";
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from "../redux/user/userSlice";
+import { 
+  updateUserStart, 
+  updateUserSuccess, 
+  updateUserFailure, 
+  deleteUserStart, 
+  deleteUserSuccess, 
+  deleteUserFailure, 
+  signOut } from "../redux/user/userSlice";
 import { useDispatch } from "react-redux";
 
 export default function Profile() {
@@ -54,6 +61,15 @@ export default function Profile() {
       dispatch(deleteUserSuccess());
     } catch (error) {
       dispatch(deleteUserFailure(error));
+    }
+  }
+
+  const handleSignout = async (e) => {
+    try{
+      await fetch('/api/auth/signout');
+      dispatch(signOut());
+    } catch (error) {
+      console.log(error);
     }
   }
   
@@ -110,7 +126,7 @@ export default function Profile() {
       </form>
       <div className="flex justify-between mt-5">
         <span onClick={handleDelete} className="text-red-700 cursor-pointer">Delete Account</span>
-        <span className="text-red-700 cursor-pointer">Sign out</span>
+        <span onClick={handleSignout} className="text-red-700 cursor-pointer">Sign out</span>
       </div>
       <p className="text-green-700 mt-5">{updateSuccess && "Profile updated successfully!"}</p>
       <p className="text-red-700 mt-5">{error && "Something went wrong!"}</p>
